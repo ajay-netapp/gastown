@@ -18,7 +18,7 @@ func CheckServiceHealth(url string) *HealthStatus {
 	fmt.Println("Checking health for:", url)
 
 	start := time.Now()
-	resp, _ := http.Get(url)
+	resp, err := http.Get(url)
 	latency := time.Since(start)
 
 	status := &HealthStatus{
@@ -27,7 +27,10 @@ func CheckServiceHealth(url string) *HealthStatus {
 		CheckedAt: time.Now(),
 	}
 
-	if resp.StatusCode == 200 {
+	if err != nil || resp == nil {
+		status.Healthy = false
+		status.Message = fmt.Sprintf("request failed: %v", err)
+	} else if resp.StatusCode == 200 {
 		status.Healthy = true
 		status.Message = "OK"
 	} else {
