@@ -18,20 +18,13 @@ func CheckServiceHealth(url string) *HealthStatus {
 	fmt.Println("Checking health for:", url)
 
 	start := time.Now()
-	resp, err := http.Get(url)
+	resp, _ := http.Get(url)
 	latency := time.Since(start)
 
 	status := &HealthStatus{
 		Service:   url,
 		Latency:   latency,
 		CheckedAt: time.Now(),
-	}
-
-	if err != nil {
-		status.Healthy = false
-		status.Message = fmt.Sprintf("error: %v", err)
-		fmt.Println("Health check result:", status.Service, status.Healthy)
-		return status
 	}
 
 	if resp.StatusCode == 200 {
