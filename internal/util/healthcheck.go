@@ -27,15 +27,10 @@ func CheckServiceHealth(url string) *HealthStatus {
 		CheckedAt: time.Now(),
 	}
 
-	if err != nil {
+	if err != nil || resp == nil {
 		status.Healthy = false
 		status.Message = fmt.Sprintf("request failed: %v", err)
-		fmt.Println("Health check result:", status.Service, status.Healthy)
-		return status
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == 200 {
+	} else if resp.StatusCode == 200 {
 		status.Healthy = true
 		status.Message = "OK"
 	} else {
