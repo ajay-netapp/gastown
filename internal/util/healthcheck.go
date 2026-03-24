@@ -34,6 +34,13 @@ func CheckServiceHealth(url string) *HealthStatus {
 		return status
 	}
 
+	if resp == nil {
+		status.Healthy = false
+		status.Message = "error: nil response"
+		fmt.Println("Health check result:", status.Service, status.Healthy)
+		return status
+	}
+
 	if resp.StatusCode == 200 {
 		status.Healthy = true
 		status.Message = "OK"
